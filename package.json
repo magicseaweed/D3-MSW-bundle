@@ -29,7 +29,7 @@
     "build_bundle": "rollup -c --banner \"$(preamble)\" -f umd -n d3 -o build/d3.js -- index.js && uglifyjs --preamble \"$(preamble)\" build/d3.js -c negate_iife=false -m -o build/d3.min.js",
     "build_full": "rollup -c --banner \"$(preamble)\" -f umd -n d3 -o build/d3-full.js -- index_full.js && uglifyjs --preamble \"$(preamble)\" build/d3-full.js -c negate_iife=false -m -o build/d3-full.min.js",
     "build": "npm run pre && npm run build_bundle && npm run build_full",
-    "publish": "VERSION=`node -e 'console.log(require(\"./package.json\")[\"MSW-tag\"])'`; git push && git push --tags && git add -f ./build/* &&  git commit -m \"Build auto-commit ${VERSION}\" && git tag -am \"${VERSION}\" v${VERSION} && git push && git push --tags"
+    "publish": "VERSION=`node -e 'console.log(require(\"./package.json\")[\"MSW-tag\"])'`; git push && git push --tags && git add -f ./build/* package.json &&  git commit -m \"Build auto-commit ${VERSION}\" && git tag -am \"${VERSION}\" v${VERSION} && git push && git push --tags"
   },
   "devDependencies": {
     "json2module": "0.0",
