@@ -1,0 +1,14 @@
+export var name = "d3";
+export var version = "4.2.3";
+export var description = "Data-Driven Documents";
+export var keywords = ["dom","visualization","svg","animation","canvas"];
+export var homepage = "https://d3js.org";
+export var license = "BSD-3-Clause";
+export var author = {"name":"Mike Bostock","url":"https://bost.ocks.org/mike"};
+export var main = "build/d3.node.js";
+export var browser = "build/d3.js";
+export var module = "index";
+export var repository = {"type":"git","url":"https://github.com/d3/d3.git"};
+export var scripts = {"pre":"rm -rf build && mkdir build && json2module package.json > build/package.js","build_bundle":"rollup -c --banner \"$(preamble)\" -f umd -n d3 -o build/d3.js -- index.js && uglifyjs --preamble \"$(preamble)\" build/d3.js -c negate_iife=false -m -o build/d3.min.js","build_full":"rollup -c --banner \"$(preamble)\" -f umd -n d3 -o build/d3-full.js -- index_full.js && uglifyjs --preamble \"$(preamble)\" build/d3-full.js -c negate_iife=false -m -o build/d3-full.min.js","build":"npm run pre && npm run build_bundle && npm run build_full","_publish":"VERSION=`node -e 'console.log(require(\"./package.json\")[\"MSW-tag\"])'`; git push && git push --tags && git add -f ./build/* &&  git commit -m \"Build auto-commit ${VERSION}\" && git tag -am \"${VERSION}\" v${VERSION} && git push && git push --tags","publish":"VERSION=`node -e 'console.log(require(\"./package.json\")[\"MSW-tag\"])'`; git push && git push --tags && git add -f ./build/* &&  git commit -m \"Build auto-commit ${VERSION}\" && git tag -am \"${VERSION}\" v${VERSION}"};
+export var devDependencies = {"json2module":"0.0","package-preamble":"0.0","rollup":"0.35","rollup-plugin-ascii":"0.0","rollup-plugin-node-resolve":"2","tape":"4","uglify-js":"2"};
+export var dependencies = {"d3-array":"1.0.1","d3-axis":"1.0.3","d3-brush":"1.0.2","d3-chord":"1.0.2","d3-collection":"1.0.1","d3-color":"1.0.1","d3-dispatch":"1.0.1","d3-drag":"1.0.1","d3-dsv":"1.0.3","d3-ease":"1.0.1","d3-force":"1.0.2","d3-format":"1.0.2","d3-geo":"1.2.4","d3-hierarchy":"1.0.2","d3-interpolate":"1.1.1","d3-path":"1.0.2","d3-polygon":"1.0.1","d3-quadtree":"1.0.1","d3-queue":"3.0.3","d3-random":"1.0.1","d3-request":"1.0.2","d3-scale":"1.0.3","d3-selection":"1.0.2","d3-shape":"1.0.3","d3-time":"1.0.3","d3-time-format":"2.0.2","d3-timer":"1.0.3","d3-transition":"1.0.2","d3-voronoi":"1.0.2","d3-zoom":"1.0.3"};
