@@ -1,7 +1,7 @@
 {
   "name": "d3",
   "version": "4.2.3",
-  "MSW-tag": "0.1.0",
+  "MSW-tag": "0.2.0",
   "description": "Data-Driven Documents",
   "keywords": [
     "dom",
