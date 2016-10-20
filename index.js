@@ -34,14 +34,14 @@ export {
 //  zip
 } from "d3-array";
 
-//export {
+export {
 //  entries,
 //  keys,
 //  values,
-//  map,
+  map,
 //  set,
 //  nest
-//} from "d3-collection";
+} from "d3-collection";
 //
 //export {
 //  randomUniform,
@@ -346,7 +346,7 @@ export {
 export {
 //  creator,
 //  customEvent,
-//  event,
+  event,
   local,
 //  matcher,
 //  mouse,
@@ -354,7 +354,7 @@ export {
 //  namespaces,
   select,
 //  selectAll,
-//  selection,
+  selection,
 //  selector,
 //  selectorAll,
 //  touch,
