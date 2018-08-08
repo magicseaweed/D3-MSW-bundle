@@ -115,7 +115,7 @@ export {
 export {
 //  arc,
   area,
-//  line,
+  line,
 //  pie,
 //  radialArea,
 //  radialLine,
