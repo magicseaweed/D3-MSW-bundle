@@ -1,4 +1,4 @@
-// https://d3js.org Version 4.2.3. Copyright 2016 Mike Bostock.
+// https://d3js.org Version 4.2.3. Copyright 2018 Mike Bostock.
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -7213,6 +7213,13 @@ var matcher$1 = matcher;
 var filterEvents = {};
 
 exports.event = null;
+
+if (typeof document !== "undefined") {
+  var element$1 = document.documentElement;
+  if (!("onmouseenter" in element$1)) {
+    filterEvents = {mouseenter: "mouseover", mouseleave: "mouseout"};
+  }
+}
 
 function filterContextListener(listener, index, group) {
   listener = contextListener(listener, index, group);

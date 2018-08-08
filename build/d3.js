@@ -1,4 +1,4 @@
-// https://d3js.org Version 4.2.3. Copyright 2016 Mike Bostock.
+// https://d3js.org Version 4.2.3. Copyright 2018 Mike Bostock.
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -48,6 +48,43 @@ var bisectRight = ascendingBisect.right;
 
 var number = function(x) {
   return x === null ? NaN : +x;
+}
+
+var variance = function(array, f) {
+  var n = array.length,
+      m = 0,
+      a,
+      d,
+      s = 0,
+      i = -1,
+      j = 0;
+
+  if (f == null) {
+    while (++i < n) {
+      if (!isNaN(a = number(array[i]))) {
+        d = a - m;
+        m += d / ++j;
+        s += d * (a - m);
+      }
+    }
+  }
+
+  else {
+    while (++i < n) {
+      if (!isNaN(a = number(f(array[i], i, array)))) {
+        d = a - m;
+        m += d / ++j;
+        s += d * (a - m);
+      }
+    }
+  }
+
+  if (j > 1) return s / (j - 1);
+}
+
+var deviation = function(array, f) {
+  var v = variance(array, f);
+  return v ? Math.sqrt(v) : v;
 }
 
 var extent = function(array, f) {
@@ -183,6 +220,16 @@ var min = function(array, f) {
   return a;
 }
 
+var transpose = function(matrix) {
+  if (!(n = matrix.length)) return [];
+  for (var i = -1, m = min(matrix, length), transpose = new Array(m); ++i < m;) {
+    for (var j = -1, n, row = transpose[i] = new Array(n); ++j < n;) {
+      row[j] = matrix[j][i];
+    }
+  }
+  return transpose;
+}
+
 function length(d) {
   return d.length;
 }
@@ -259,6 +306,22 @@ function map$1(object, f) {
   else if (object) for (var key in object) map.set(key, object[key]);
 
   return map;
+}
+
+function createObject() {
+  return {};
+}
+
+function setObject(object, key, value) {
+  object[key] = value;
+}
+
+function createMap() {
+  return map$1();
+}
+
+function setMap(map, key, value) {
+  map.set(key, value);
 }
 
 function Set() {}
@@ -1392,49 +1455,6 @@ function monotoneX(context) {
   return new MonotoneX(context);
 }
 
-function Natural(context) {
-  this._context = context;
-}
-
-Natural.prototype = {
-  areaStart: function() {
-    this._line = 0;
-  },
-  areaEnd: function() {
-    this._line = NaN;
-  },
-  lineStart: function() {
-    this._x = [];
-    this._y = [];
-  },
-  lineEnd: function() {
-    var x = this._x,
-        y = this._y,
-        n = x.length;
-
-    if (n) {
-      this._line ? this._context.lineTo(x[0], y[0]) : this._context.moveTo(x[0], y[0]);
-      if (n === 2) {
-        this._context.lineTo(x[1], y[1]);
-      } else {
-        var px = controlPoints(x),
-            py = controlPoints(y);
-        for (var i0 = 0, i1 = 1; i1 < n; ++i0, ++i1) {
-          this._context.bezierCurveTo(px[0][i0], py[0][i0], px[1][i0], py[1][i0], x[i1], y[i1]);
-        }
-      }
-    }
-
-    if (this._line || (this._line !== 0 && n === 1)) this._context.closePath();
-    this._line = 1 - this._line;
-    this._x = this._y = null;
-  },
-  point: function(x, y) {
-    this._x.push(+x);
-    this._y.push(+y);
-  }
-};
-
 // See https://www.particleincell.com/2012/bezier-splines/ for derivation.
 function controlPoints(x) {
   var i,
@@ -1474,6 +1494,11 @@ var none$1 = function(series) {
 
 function stackValue(d, key) {
   return d[key];
+}
+
+var ascending$1 = function(series) {
+  var sums = series.map(sum$1);
+  return none$1(series).sort(function(a, b) { return sums[a] - sums[b]; });
 }
 
 function sum$1(series) {
@@ -3202,6 +3227,14 @@ define(Cubehelix, cubehelix, extend(Color, {
   }
 }));
 
+function basis$1(t1, v0, v1, v2, v3) {
+  var t2 = t1 * t1, t3 = t2 * t1;
+  return ((1 - 3 * t1 + 3 * t2 - t3) * v0
+      + (4 - 6 * t2 + 3 * t3) * v1
+      + (1 + 3 * t1 + 3 * t2 - 3 * t3) * v2
+      + t3 * v3) / 6;
+}
+
 var constant$3 = function(x) {
   return function() {
     return x;
@@ -3505,6 +3538,7 @@ var interpolateTransformSvg = interpolateTransform(parseSvg, ", ", ")", ")");
 var rho = Math.SQRT2;
 var rho2 = 2;
 var rho4 = 4;
+var epsilon2 = 1e-12;
 
 function cosh(x) {
   return ((x = Math.exp(x)) + 1 / x) / 2;
@@ -4066,6 +4100,13 @@ var matcher$1 = matcher;
 var filterEvents = {};
 
 exports.event = null;
+
+if (typeof document !== "undefined") {
+  var element$1 = document.documentElement;
+  if (!("onmouseenter" in element$1)) {
+    filterEvents = {mouseenter: "mouseover", mouseleave: "mouseout"};
+  }
+}
 
 function filterContextListener(listener, index, group) {
   listener = contextListener(listener, index, group);
@@ -5829,6 +5870,23 @@ var polyInOut = (function custom(e) {
   return polyInOut;
 })(exponent$1);
 
+var b1 = 4 / 11;
+var b2 = 6 / 11;
+var b3 = 8 / 11;
+var b4 = 3 / 4;
+var b5 = 9 / 11;
+var b6 = 10 / 11;
+var b7 = 15 / 16;
+var b8 = 21 / 22;
+var b9 = 63 / 64;
+var b0 = 1 / b1 / b1;
+
+
+
+function bounceOut(t) {
+  return (t = +t) < b1 ? b0 * t * t : t < b3 ? b0 * (t -= b2) * t + b4 : t < b6 ? b0 * (t -= b5) * t + b7 : b0 * (t -= b8) * t + b9;
+}
+
 var overshoot = 1.70158;
 
 var backIn = (function custom(s) {
@@ -5952,6 +6010,8 @@ var selection_transition = function(name) {
 
 selection.prototype.interrupt = selection_interrupt;
 selection.prototype.transition = selection_transition;
+
+var root$1 = [null];
 
 var slice$3 = Array.prototype.slice;
 
@@ -6229,6 +6289,7 @@ exports.max = max;
 exports.range = sequence;
 exports.map = map$1;
 exports.area = area;
+exports.line = line;
 exports.curveMonotoneX = monotoneX;
 exports.formatLocale = formatLocale;
 exports.formatDefaultLocale = defaultLocale;
